@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using dotnet_backend.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -15,6 +16,12 @@ namespace dotnet_backend
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            // Depenency Injection
+            services.AddScoped<FridgeServices>();
+
+            services.AddCors(options => options.AddDefaultPolicy(builder => builder.AllowAnyHeader()
+            .AllowAnyMethod().AllowAnyOrigin()));
+            services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -25,10 +32,8 @@ namespace dotnet_backend
                 app.UseDeveloperExceptionPage();
             }
 
-            app.Run(async (context) =>
-            {
-                await context.Response.WriteAsync("Hello World!");
-            });
+            app.UseCors();
+            app.UseMvc();
         }
     }
 }
